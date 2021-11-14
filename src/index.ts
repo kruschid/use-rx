@@ -5,7 +5,11 @@ import useConstant from 'use-constant';
 export const useRx = <Event, State>(
   callback: (event$: Observable<Event>, state$: BehaviorSubject<State>) => Observable<State>,
   initialState: State
-): [state: State, dispatch: (event: Event) => void] => {
+): [
+    state: State,
+    dispatch: (event: Event) => void,
+    setState: React.Dispatch<React.SetStateAction<State>>,
+  ] => {
   const [state, setState] = useState(initialState);
   const event$ = useConstant(() => new Subject<Event>());
   const state$ = useConstant(() => new BehaviorSubject<State>(initialState));
@@ -22,5 +26,5 @@ export const useRx = <Event, State>(
       event$.complete();
     }
   }, []);
-  return [state, dispatch];
+  return [state, dispatch, setState];
 };
