@@ -16,15 +16,21 @@ export const useRx = <Event, State>(
   const dispatch = useCallback((event: Event) => {
     event$.next(event);
   }, []);
+
   useEffect(() => {
-    const subscription = callback(event$, state$).subscribe(
-      (next) => (setState(next), state$.next(next))
-    );
+    const subscription = callback(event$, state$)
+      .subscribe(setState);
+
     return () => {
       subscription.unsubscribe();
       state$.complete();
       event$.complete();
     }
   }, []);
+
+  useEffect(() => {
+    state$.next(state)
+  }, [state]);
+
   return [state, dispatch, setState];
 };
